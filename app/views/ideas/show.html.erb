@@ -1,0 +1,28 @@
+<h1><%= @idea.title %></h1>
+
+<p><%= @idea.body %>
+
+<h2>Add Comments</h2>
+
+<%= form_for @comment, url: idea_comments_path(@idea) do |f| %>
+<%= f.label :body %>
+<%= f.text_area :body %>
+<br>
+
+<%= f.submit "Submit!" %>
+<% end %>
+
+<h2>Comments</h2>
+
+<% @comments.each do |comment| %>
+  <p><%= comment.body %>
+  <br>- Written by <%= comment.user.email %>
+  <hr>
+<% end %>
+
+<h2>Members</h2>
+
+<% @idea.members.each do |member| %>
+  <p><%= member.email %>
+  <hr>
+<% end %>

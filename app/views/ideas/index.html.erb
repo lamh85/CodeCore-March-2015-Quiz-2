@@ -1,0 +1,48 @@
+<h1>Showing All Ideas</h1>
+
+<% @idea.each do |idea| %>
+
+  <p class="ideaTitleListing"><%= link_to idea.title, idea %>
+  
+  <% if idea.user != nil %>
+    <br>Created by <%= idea.user.email %>
+  <% end %>
+
+  <p><%= idea.body %>
+  <p><img src="<%idea.image%>">
+
+  <!-- EDIT OR DELETE THE IDEA -->
+  <p><%= button_to "Delete", idea_path(idea), method: :delete, data: {confirm: "Are you sure?"} %>
+  <p><%= link_to "Edit", edit_idea_path(idea) %>
+
+  <!-- JOINING OR LEAVING THE IDEA -->
+  <p>
+  <% if user_signed_in? %>
+    <% if idea.user_id == current_user.id %>
+      <%= "You cannot 'Join' because you created this idea" %>
+    <% elsif idea.memberships.find_by_user_id(current_user.id) == nil %>
+      <%= link_to "Join as member", idea_memberships_path(idea), method: :post %>
+    <% else %>
+      <%= link_to "Leave membership", idea_membership_path(idea, idea.memberships.find_by_user_id(current_user.id) ), method: :delete %>
+    <% end %>
+  <% else %>
+    <%= "You need to sign in to join or leave this idea" %>
+  <% end %>
+
+  <!-- LIKING OR UN-LIKING AN IDEA -->
+  <p>
+  <% if user_signed_in? %>
+    <% if idea.user_id == current_user.id %>
+      <%= "You cannot 'Like' because you created this idea" %>
+    <% elsif idea.likes.find_by_user_id(current_user.id) == nil %>
+      <%= link_to "Like this idea", idea_likes_path(idea), method: :post %>
+    <% else %>
+      <%= link_to "Un-Like this idea", idea_like_path(idea, idea.likers.find_by_id(current_user.id) ), method: :delete %>
+    <% end %>
+  <% else %>
+    <%= "You need to sign in to 'Like' this idea" %>
+  <% end %>
+
+
+  <hr>
+<% end %>
